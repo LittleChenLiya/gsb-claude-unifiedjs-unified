@@ -11,3 +11,4 @@ import './run-sync.js'
 import './stringify.js'
 import './use.js'
 /* eslint-enable import/no-unassigned-import */
+import './plan.js'

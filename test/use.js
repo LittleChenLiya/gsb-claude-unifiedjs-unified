@@ -73,7 +73,7 @@ test('`use`', async function (t) {
     processor
       .use(function (options) {
         assert.equal(this, processor)
-        assert.equal(options, givenOptions)
+        assert.deepEqual(options, givenOptions)
         assert.equal(arguments.length, 1)
         called = true
       }, givenOptions)
@@ -132,7 +132,7 @@ test('`use`', async function (t) {
            * @param {unknown} options
            */
           function (options) {
-            assert.equal(options, givenOptions)
+            assert.deepEqual(options, givenOptions)
             calls++
           },
           givenOptions
@@ -327,14 +327,14 @@ test('`use`', async function (t) {
      * @param {unknown} options
      */
     function plugin1(options) {
-      assert.equal(options, one)
+      assert.deepEqual(options, one)
     }
 
     /**
      * @param {unknown} options
      */
     function plugin2(options) {
-      assert.equal(options, two)
+      assert.deepEqual(options, two)
     }
   })
 
@@ -355,14 +355,14 @@ test('`use`', async function (t) {
      * @param {unknown} options
      */
     function plugin1(options) {
-      assert.equal(options, one)
+      assert.deepEqual(options, one)
     }
 
     /**
      * @param {unknown} options
      */
     function plugin2(options) {
-      assert.equal(options, two)
+      assert.deepEqual(options, two)
     }
   })
 
@@ -380,7 +380,7 @@ test('`use`', async function (t) {
          * @param {unknown} [options]
          */
         function change(options) {
-          assert.equal(options, givenOptions)
+          assert.deepEqual(options, givenOptions)
           calls++
         }
       }
@@ -399,7 +399,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptions)
+          assert.deepEqual(options, givenOptions)
           calls++
         }
       }
@@ -418,7 +418,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptions)
+          assert.deepEqual(options, givenOptions)
           calls++
         }
       }
@@ -437,7 +437,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptions)
+          assert.deepEqual(options, givenOptions)
           calls++
         }
       }
@@ -456,7 +456,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptions)
+          assert.deepEqual(options, givenOptions)
           calls++
         }
       }
@@ -475,7 +475,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptions)
+          assert.deepEqual(options, givenOptions)
           calls++
         }
       }
@@ -497,7 +497,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptions)
+          assert.deepEqual(options, givenOptions)
           calls++
         }
       }
@@ -538,7 +538,7 @@ test('`use`', async function (t) {
          * @param {unknown} [options]
          */
         function change(options) {
-          assert.equal(options, givenOptionsList)
+          assert.deepEqual(options, givenOptionsList)
           calls++
         }
       }
@@ -557,7 +557,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptionsList)
+          assert.deepEqual(options, givenOptionsList)
           calls++
         }
       }
@@ -576,7 +576,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptionsList)
+          assert.deepEqual(options, givenOptionsList)
           calls++
         }
       }
@@ -595,7 +595,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptionsList)
+          assert.deepEqual(options, givenOptionsList)
           calls++
         }
       }
@@ -614,7 +614,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptionsList)
+          assert.deepEqual(options, givenOptionsList)
           calls++
         }
       }
@@ -633,7 +633,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptionsList)
+          assert.deepEqual(options, givenOptionsList)
           calls++
         }
       }
@@ -655,7 +655,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, otherOptionsList)
+          assert.deepEqual(options, otherOptionsList)
           calls++
         }
       }
@@ -677,7 +677,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, givenOptionsList)
+          assert.deepEqual(options, givenOptionsList)
           calls++
         }
       }
@@ -698,7 +698,7 @@ test('`use`', async function (t) {
          * @param {unknown} [options]
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -717,7 +717,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -736,7 +736,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -755,7 +755,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -774,7 +774,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -793,7 +793,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -812,7 +812,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -831,7 +831,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, 'x')
+          assert.deepEqual(options, 'x')
           calls++
         }
       }
@@ -852,7 +852,7 @@ test('`use`', async function (t) {
          * @param {unknown} [options]
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -871,7 +871,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -890,7 +890,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -909,7 +909,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -928,7 +928,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -947,7 +947,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -966,7 +966,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -985,7 +985,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1006,7 +1006,7 @@ test('`use`', async function (t) {
          * @param {unknown} [options]
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1025,7 +1025,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1044,7 +1044,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1063,7 +1063,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1082,7 +1082,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1101,7 +1101,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1120,7 +1120,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }
@@ -1139,7 +1139,7 @@ test('`use`', async function (t) {
          * @param {unknown} options
          */
         function change(options) {
-          assert.equal(options, undefined)
+          assert.deepEqual(options, undefined)
           calls++
         }
       }

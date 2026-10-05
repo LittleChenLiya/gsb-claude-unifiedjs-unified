@@ -83,6 +83,7 @@
   "repository": "unifiedjs/unified",
   "scripts": {
     "build": "tsc --build --clean && tsc --build && node script/fix-types.js && type-coverage && tsd",
+    "example": "node --conditions development example/plan.js",
     "format": "remark . --frail --output --quiet && prettier . --log-level warn --write && xo --fix",
     "prepack": "npm run build && npm run format",
     "test": "npm run build && npm run format && npm run test-coverage",
