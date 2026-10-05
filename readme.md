@@ -38,6 +38,7 @@
   * [`Pluggable`](#pluggable)
   * [`PluggableList`](#pluggablelist)
   * [`Plugin`](#plugin)
+  * [`PluginOrdering`](#pluginordering)
   * [`PluginTuple`](#plugintuple)
   * [`Preset`](#preset)
   * [`ProcessCallback`](#processcallback)
@@ -928,6 +929,11 @@ unified()
   .use({settings: {position: false}})
 ```
 
+> 👉 **Note**: the order in which plugins run can be declared explicitly
+> with `before`/`after` fields on plugins, instead of depending on the
+> order of `use` calls.
+> See [`PluginOrdering`][api-plugin-ordering] for more info.
+
 ### `CompileResultMap`
 
 Interface of known results from compilers (TypeScript type).
@@ -1091,6 +1097,23 @@ Plugins configure the processors they are applied on in the following ways:
 In practice, they are functions that can receive options and configure the
 processor (`this`).
 
+Plugins can also declare an explicit *plan* with static fields (see
+[`PluginOrdering`][api-plugin-ordering]):
+
+* `pluginName` (`string`, optional) — name of the plugin, used in the plan
+  and attached to errors caused by its transformers
+  (default: the function `name`)
+* `before` (`Array<string>`, optional) — names of plugins that this plugin
+  must run *before*
+* `after` (`Array<string>`, optional) — names of plugins that this plugin
+  must run *after*
+
+When the processor is frozen, a stable plan is computed from these fields:
+plugins without dependencies keep their registration order, and missing or
+circular dependencies throw.
+The configuration given to plugins is snapshotted then too: changing the
+original options objects afterwards does not change a frozen processor.
+
 > 👉 **Note**: plugins are called when the processor is *frozen*, not when they
 > are applied.
 
@@ -1191,6 +1214,90 @@ example.md: no issues found
 
 ```html
 <h1>Hello, world!</h1>
+```
+
+###### Example: plugin plan
+
+This example shows three plugins that declare an explicit plan with
+`before`/`after`.
+They are registered in reverse order, but the plan decides the actual
+order, so repeating or reordering `use` calls cannot change it by accident.
+
+`plan.js`:
+
+```js
+import {unified} from 'unified'
+
+// Append `c` to the value.
+function pluginC() {
+  return function (tree) {
+    return {type: 'text', value: tree.value + 'c'}
+  }
+}
+pluginC.after = ['pluginB']
+
+// Append `b` to the value.
+function pluginB() {
+  return function (tree) {
+    return {type: 'text', value: tree.value + 'b'}
+  }
+}
+pluginB.after = ['pluginA']
+
+// Append `a` to the value.
+function pluginA() {
+  return function (tree) {
+    return {type: 'text', value: tree.value + 'a'}
+  }
+}
+
+const tree = await unified()
+  // Registered in reverse, but the plan runs them as a, b, c:
+  .use(pluginC)
+  .use(pluginB)
+  .use(pluginA)
+  .run({type: 'text', value: ''})
+
+console.log(tree.value)
+```
+
+Run with Node.js:
+
+```sh
+node plan.js
+```
+
+Yields:
+
+```txt
+abc
+```
+
+### `PluginOrdering`
+
+Optional static fields that can be defined on a [`Plugin`][api-plugin] to
+declare an explicit plan for the order in which plugins run (TypeScript
+type).
+
+The order does not depend on how often or in which sequence `use` is
+called: when the processor is frozen, a stable plan is computed from these
+fields.
+Plugins that do not declare dependencies keep their registration order.
+Referencing a plugin that is not registered, or circular dependencies,
+throw when the processor is frozen.
+
+###### Type
+
+```ts
+interface PluginOrdering {
+  // Names of plugins that this plugin must run *after*.
+  after?: Array<string> | undefined
+  // Names of plugins that this plugin must run *before*.
+  before?: Array<string> | undefined
+  // Name of the plugin in the plan and in errors
+  // (default: the function `name`).
+  pluginName?: string | undefined
+}
 ```
 
 ### `PluginTuple`
@@ -1482,6 +1589,7 @@ It exports the additional types
 [`Pluggable`][api-pluggable],
 [`PluggableList`][api-pluggable-list],
 [`Plugin`][api-plugin],
+[`PluginOrdering`][api-plugin-ordering],
 [`PluginTuple`][api-plugin-tuple],
 [`Preset`][api-preset],
 [`ProcessCallback`][api-process-callback],
@@ -1821,6 +1929,8 @@ work on [`ware`][ware], as it was a huge initial inspiration.
 [api-pluggable-list]: #pluggablelist
 
 [api-plugin]: #plugin
+
+[api-plugin-ordering]: #pluginordering
 
 [api-plugin-tuple]: #plugintuple
 

@@ -10,6 +10,7 @@ export type {
   Pluggable,
   PluggableList,
   Plugin,
+  PluginOrdering,
   PluginTuple,
   Preset,
   ProcessCallback,
