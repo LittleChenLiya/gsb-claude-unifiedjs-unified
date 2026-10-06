@@ -20,6 +20,14 @@ export type {
   Transformer
 } from './lib/index.js'
 
+export type {
+  DiagnosticMessage,
+  DiagnosticPhase,
+  DiagnosticPhaseName,
+  DiagnosticReport,
+  DiagnosticStatus
+} from './lib/diagnose.js'
+
 export {unified} from './lib/index.js'
 
 // See: <https://github.com/sindresorhus/type-fest/blob/main/source/empty-object.d.ts>

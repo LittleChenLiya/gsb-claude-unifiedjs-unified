@@ -596,3 +596,37 @@ const rehypeClassNames: Plugin<[], HastRoot> = function () {
 expectType<Processor<undefined, MdastRoot, HastRoot>>(
   unified().use(remarkLint).use(rehypeClassNames)
 )
+
+// # Diagnostic sessions
+
+import type {
+  DiagnosticMessage,
+  DiagnosticPhase,
+  DiagnosticPhaseName,
+  DiagnosticReport,
+  DiagnosticStatus
+} from './index.js'
+
+const diagnosticReportPromise = unified().diagnose('')
+
+expectType<Promise<DiagnosticReport>>(diagnosticReportPromise)
+
+diagnosticReportPromise.then(function (report) {
+  expectType<boolean>(report.complete)
+  expectType<boolean>(report.ok)
+  expectType<Error | undefined>(report.error)
+  expectType<DiagnosticPhaseName | undefined>(report.failedPhase)
+  expectType<string | undefined>(report.failedPlugin)
+  expectType<VFile>(report.file)
+  expectType<Array<DiagnosticMessage>>(report.messages)
+  expectType<Array<DiagnosticPhase>>(report.phases)
+
+  const message = report.messages[0]
+  expectType<DiagnosticPhaseName | undefined>(message.phase)
+  expectType<string | undefined>(message.plugin)
+
+  const phase = report.phases[0]
+  expectType<DiagnosticPhaseName>(phase.phase)
+  expectType<string | undefined>(phase.plugin)
+  expectType<DiagnosticStatus>(phase.status)
+})

@@ -467,6 +467,99 @@ processor.data({charlie: 'delta'})
 processor.data() // => {charlie: 'delta'}
 ```
 
+### `processor.diagnose(file)`
+
+Run an explicit **diagnostic session** on `file`.
+
+This performs the [parse, run, and stringify phases][overview] exactly once,
+like [`process`][api-process], but instead of rejecting on the first fatal
+error it always resolves with a diagnostic report
+([`DiagnosticReport`][api-diagnostic-report]).
+
+Every message created along the way is attributed to the exact phase
+(`parse`, `transform`, or `stringify`) and plugin that produced it, instead
+of everything being attributed to the final plugin.
+
+> 👉 **Note**: `diagnose` freezes the processor if not already
+> *[frozen][api-freeze]*.
+
+> 👉 **Note**: messages that were already on the file are preserved as-is
+> and reported once, with no phase or plugin.
+> Messages added during the session are collected once: nothing is
+> duplicated.
+
+> 👉 **Note**: when a phase fails, the report contains the diagnostics
+> completed so far, `complete` is `false`, and the phases that never started
+> are marked `skipped`.
+> A successful session without messages is not a failure: `ok` is `true`.
+
+> 👉 **Note**: the report comes from this single run; the pipeline is not
+> re-executed to build it.
+> Concurrent sessions on the same processor are isolated and never mix file
+> sources.
+
+###### Parameters
+
+* `file` ([`Compatible`][vfile-compatible], optional) — file to process;
+  typically `string` or [`VFile`][vfile]; any value accepted as `x` in
+  `new VFile(x)`
+
+###### Returns
+
+Promise resolving to a diagnostic report
+([`Promise<DiagnosticReport>`][api-diagnostic-report]).
+
+###### Example
+
+This example runs a four-phase diagnostic session (`parse`, two `transform`
+plugins, and `stringify`) and prints where each message came from.
+Run it locally with `node example/diagnose.js` (or
+`npm run example-diagnose`).
+
+```js
+import {unified} from 'unified'
+
+const processor = unified()
+  .use(function parsePhase() {
+    this.parser = function (document, file) {
+      file.message('parsed')
+      return {type: 'root'}
+    }
+  })
+  .use(function alpha() {
+    return function (tree, file) {
+      file.message('alpha checked')
+    }
+  })
+  .use(function beta() {
+    return function (tree, file) {
+      file.message('beta checked')
+    }
+  })
+  .use(function stringifyPhase() {
+    this.compiler = function (tree, file) {
+      file.message('stringified')
+      return JSON.stringify(tree)
+    }
+  })
+
+const report = await processor.diagnose('hello')
+
+console.log(report.ok) // => true
+for (const {message, phase, plugin} of report.messages) {
+  console.log(phase, plugin, message.reason)
+}
+```
+
+Yields:
+
+```txt
+parse parsePhase 'parsed'
+transform alpha 'alpha checked'
+transform beta 'beta checked'
+stringify stringifyPhase 'stringified'
+```
+
 ### `processor.freeze()`
 
 Freeze a processor.
@@ -1034,6 +1127,80 @@ interface Data {
 ```
 
 See [`Settings`][api-settings] for more info.
+
+### `DiagnosticMessage`
+
+A message collected during a diagnostic session, attributed to the phase and
+plugin that created it (TypeScript type).
+
+###### Type
+
+```ts
+interface DiagnosticMessage {
+  message: VFileMessage
+  phase: DiagnosticPhaseName | undefined
+  plugin: string | undefined
+}
+```
+
+### `DiagnosticPhase`
+
+Diagnostics of one unit of work (`parse`, one `transform`, or `stringify`)
+in a diagnostic session (TypeScript type).
+
+###### Type
+
+```ts
+interface DiagnosticPhase {
+  phase: DiagnosticPhaseName
+  plugin: string | undefined
+  status: DiagnosticStatus
+  messages: Array<VFileMessage>
+}
+```
+
+### `DiagnosticPhaseName`
+
+Name of a phase in a diagnostic session (TypeScript type).
+
+###### Type
+
+```ts
+type DiagnosticPhaseName = 'parse' | 'transform' | 'stringify'
+```
+
+### `DiagnosticReport`
+
+Result of an explicit diagnostic session (TypeScript type).
+
+###### Type
+
+```ts
+interface DiagnosticReport {
+  complete: boolean
+  ok: boolean
+  error: Error | undefined
+  failedPhase: DiagnosticPhaseName | undefined
+  failedPlugin: string | undefined
+  file: VFile
+  messages: Array<DiagnosticMessage>
+  phases: Array<DiagnosticPhase>
+}
+```
+
+### `DiagnosticStatus`
+
+Status of one phase in a diagnostic session (TypeScript type).
+
+* `'ok'` — the phase ran to completion
+* `'failed'` — the phase raised a fatal error, ending the session
+* `'skipped'` — the phase was never started, because an earlier phase failed
+
+###### Type
+
+```ts
+type DiagnosticStatus = 'ok' | 'failed' | 'skipped'
+```
 
 ### `Parser`
 
@@ -1811,6 +1978,8 @@ work on [`ware`][ware], as it was a huge initial inspiration.
 [api-compiler]: #compiler
 
 [api-data]: #data
+
+[api-diagnostic-report]: #diagnosticreport
 
 [api-freeze]: #processorfreeze
 
