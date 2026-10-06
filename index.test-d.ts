@@ -4,6 +4,12 @@ import {expectType} from 'tsd'
 import type {Node as UnistNode} from 'unist'
 import type {VFile} from 'vfile'
 import type {Plugin, Processor, TransformCallback} from './index.js'
+import type {
+  Diagnostic,
+  DiagnosticPhase,
+  DiagnosticPhaseName,
+  DiagnosticReport
+} from './index.js'
 import {unified} from './index.js'
 
 expectType<Processor>(unified())
@@ -596,3 +602,17 @@ const rehypeClassNames: Plugin<[], HastRoot> = function () {
 expectType<Processor<undefined, MdastRoot, HastRoot>>(
   unified().use(remarkLint).use(rehypeClassNames)
 )
+
+// # Diagnostic sessions
+
+expectType<Promise<DiagnosticReport>>(unified().diagnose(''))
+
+declare const diagnosticReport: DiagnosticReport
+
+expectType<boolean>(diagnosticReport.ok)
+expectType<Error | undefined>(diagnosticReport.error)
+expectType<VFile>(diagnosticReport.file)
+expectType<Array<Diagnostic>>(diagnosticReport.messages)
+expectType<Array<DiagnosticPhase>>(diagnosticReport.phases)
+expectType<DiagnosticPhaseName>(diagnosticReport.phases[0].phase)
+expectType<string | undefined>(diagnosticReport.phases[0].plugin)

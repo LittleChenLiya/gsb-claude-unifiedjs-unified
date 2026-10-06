@@ -5,6 +5,10 @@ export type {
   // `CompileResultMap` is typed and exposed below.
   CompileResults,
   Compiler,
+  Diagnostic,
+  DiagnosticPhase,
+  DiagnosticPhaseName,
+  DiagnosticReport,
   // `Data` is typed and exposed below.
   Parser,
   Pluggable,
