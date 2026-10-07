@@ -3,7 +3,12 @@ import type {Root as MdastRoot} from 'mdast'
 import {expectType} from 'tsd'
 import type {Node as UnistNode} from 'unist'
 import type {VFile} from 'vfile'
-import type {Plugin, Processor, TransformCallback} from './index.js'
+import type {
+  MessageSeverityMapper,
+  Plugin,
+  Processor,
+  TransformCallback
+} from './index.js'
 import {unified} from './index.js'
 
 expectType<Processor>(unified())
@@ -596,3 +601,17 @@ const rehypeClassNames: Plugin<[], HastRoot> = function () {
 expectType<Processor<undefined, MdastRoot, HastRoot>>(
   unified().use(remarkLint).use(rehypeClassNames)
 )
+
+// # Mapping message severity at completion
+
+type Message = VFile['messages'][number]
+
+const severityMapper: MessageSeverityMapper = function (message, file) {
+  expectType<Message>(message)
+  expectType<VFile>(file)
+  return null
+}
+
+expectType<MessageSeverityMapper | undefined>(unified().severityMapper)
+unified().severityMapper = severityMapper
+unified().severityMapper = undefined

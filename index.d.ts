@@ -6,6 +6,7 @@ export type {
   CompileResults,
   Compiler,
   // `Data` is typed and exposed below.
+  MessageSeverityMapper,
   Parser,
   Pluggable,
   PluggableList,
