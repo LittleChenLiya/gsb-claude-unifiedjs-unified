@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unassigned-import */
 import './core.js'
 import './data.js'
+import './duplicate-plugins.js'
 import './freeze.js'
 import './parse.js'
 import './process.js'

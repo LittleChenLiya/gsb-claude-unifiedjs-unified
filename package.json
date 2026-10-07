@@ -87,7 +87,8 @@
     "prepack": "npm run build && npm run format",
     "test": "npm run build && npm run format && npm run test-coverage",
     "test-api": "node --conditions development test/index.js",
-    "test-coverage": "c8 --100 --check-coverage --reporter lcov npm run test-api"
+    "test-coverage": "c8 --100 --check-coverage --reporter lcov npm run test-api",
+    "test-duplicate-plugins": "node script/duplicate-plugins-demo.js"
   },
   "sideEffects": false,
   "typeCoverage": {

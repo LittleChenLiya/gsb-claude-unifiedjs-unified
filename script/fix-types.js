@@ -17,7 +17,7 @@ const result = file
   })
   .replace(/extends Processor_base/, function () {
     console.log('Fixed `CallableInstance` use')
-    return 'extends CallableInstance<[], Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>>'
+    return 'extends CallableInstance<[ProcessorOptions?], Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>>'
   })
   .replace(
     /\.\.\.parameters: (Parameters_\d) \| \[boolean] \| undefined/,

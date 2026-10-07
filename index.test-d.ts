@@ -3,11 +3,26 @@ import type {Root as MdastRoot} from 'mdast'
 import {expectType} from 'tsd'
 import type {Node as UnistNode} from 'unist'
 import type {VFile} from 'vfile'
-import type {Plugin, Processor, TransformCallback} from './index.js'
+import type {
+  Plugin,
+  Processor,
+  ProcessorOptions,
+  TransformCallback
+} from './index.js'
 import {unified} from './index.js'
 
 expectType<Processor>(unified())
+expectType<Processor>(unified({}))
+expectType<Processor>(unified({checkDuplicatePlugins: true}))
+expectType<Processor>(unified({checkDuplicatePlugins: false}))
+expectType<Processor>(unified({checkDuplicatePlugins: undefined}))
 expectType<Processor>(unified().freeze())
+
+const processorOptions: ProcessorOptions = {checkDuplicatePlugins: true}
+expectType<ProcessorOptions>(processorOptions)
+// @ts-expect-error: unknown processor option.
+const processorOptionsInvalid: ProcessorOptions = {unknown: true}
+expectType<ProcessorOptions>(processorOptionsInvalid)
 
 type ReactNode = {
   kind: string

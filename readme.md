@@ -18,7 +18,7 @@
 * [Use](#use)
 * [Overview](#overview)
 * [API](#api)
-  * [`processor()`](#processor)
+  * [`processor(options?)`](#processoroptions-1)
   * [`processor.compiler`](#processorcompiler)
   * [`processor.data([key[, value]])`](#processordatakey-value)
   * [`processor.freeze()`](#processorfreeze)
@@ -42,6 +42,7 @@
   * [`Preset`](#preset)
   * [`ProcessCallback`](#processcallback)
   * [`Processor`](#processor-1)
+  * [`ProcessorOptions`](#processoroptions)
   * [`RunCallback`](#runcallback)
   * [`Settings`](#settings)
   * [`TransformCallback`](#transformcallback)
@@ -382,9 +383,14 @@ The following plugins lets you combine ecosystems:
 This package exports the identifier `unified` (the root `processor`).
 There is no default export.
 
-### `processor()`
+### `processor(options?)` {#processoroptions-1}
 
 Create a new processor.
+
+###### Parameters
+
+* `options` ([`ProcessorOptions`][api-processor-options], optional) — processor
+  configuration
 
 ###### Returns
 
@@ -407,6 +413,13 @@ import {remark} from 'remark'
 const value = await text(process.stdin)
 
 process.stdout.write(String(remark().processSync(value)))
+```
+
+To enable duplicate plugin checks, pass
+[`ProcessorOptions`][api-processor-options]:
+
+```js
+const processor = unified({checkDuplicatePlugins: true})
 ```
 
 ### `processor.compiler`
@@ -883,6 +896,15 @@ Configure the processor to use a plugin, a list of usable values, or a preset.
 If the processor is already using a plugin, the previous plugin configuration
 is changed based on the options that are passed in.
 In other words, the plugin is not added a second time.
+
+> 👉 **Note**: when the processor was created with
+> [`checkDuplicatePlugins`][api-processor-options] enabled, registering the
+> same plugin again with different options throws while configuring (before
+> the processor is frozen and before plugins run).
+> Registering it with deeply equal options keeps the default behavior.
+> Only plain serializable options (plain objects, arrays, strings, booleans,
+> finite numbers, `null`, and `undefined`), without circular references, can
+> be compared; other options result in an explicit error.
 
 > 👉 **Note**: `use` cannot be called on [*frozen*][api-freeze] processors.
 > Call the processor first to create a new unfrozen processor.
@@ -1367,6 +1389,36 @@ no issues found
 
 Type of a [`processor`][api-processor] (TypeScript type).
 
+### `ProcessorOptions`
+
+Configuration for a processor (TypeScript type).
+
+Pass it when calling a processor to create a new one:
+`unified({checkDuplicatePlugins: true})`.
+
+###### Type
+
+```ts
+interface ProcessorOptions {
+  checkDuplicatePlugins?: boolean | undefined
+}
+```
+
+###### Fields
+
+* `checkDuplicatePlugins` (`boolean`, optional, default: `false`)
+  — whether to throw when the same plugin is registered multiple times with
+  different options.
+  By default, registering the same plugin again reconfigures it: plain object
+  options are deep merged, other values are replaced.
+  When enabled, a second registration with options that are not deeply equal
+  to the options it was already registered with throws immediately (while
+  configuring, before the processor is frozen and before any plugin runs).
+  Deeply equal options keep the default behavior.
+  Only plain serializable options (plain objects, arrays, strings, booleans,
+  finite numbers, `null`, and `undefined`) without circular references can be
+  compared; other options throw an explicit error.
+
 ### `RunCallback`
 
 Callback called when transformers are done (TypeScript type).
@@ -1831,6 +1883,8 @@ work on [`ware`][ware], as it was a huge initial inspiration.
 [api-process-callback]: #processcallback
 
 [api-processor]: #processor
+
+[api-processor-options]: #processoroptions
 
 [api-run-callback]: #runcallback
 
