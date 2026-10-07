@@ -3,11 +3,29 @@ import type {Root as MdastRoot} from 'mdast'
 import {expectType} from 'tsd'
 import type {Node as UnistNode} from 'unist'
 import type {VFile} from 'vfile'
-import type {Plugin, Processor, TransformCallback} from './index.js'
+import type {VFileMessage} from 'vfile-message'
+import type {
+  MessageSeverityMap,
+  Plugin,
+  Processor,
+  TransformCallback
+} from './index.js'
 import {unified} from './index.js'
 
 expectType<Processor>(unified())
 expectType<Processor>(unified().freeze())
+
+// `messageSeverityMap` is an optional strategy.
+expectType<MessageSeverityMap | undefined>(unified().messageSeverityMap)
+
+const processorWithSeverityMap = unified()
+processorWithSeverityMap.messageSeverityMap = function (message, file) {
+  expectType<VFileMessage>(message)
+  expectType<VFile>(file)
+  return true
+}
+
+processorWithSeverityMap.messageSeverityMap = undefined
 
 type ReactNode = {
   kind: string

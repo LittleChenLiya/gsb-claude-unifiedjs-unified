@@ -16,7 +16,8 @@
     "extend": "^3.0.0",
     "is-plain-obj": "^4.0.0",
     "trough": "^2.0.0",
-    "vfile": "^6.0.0"
+    "vfile": "^6.0.0",
+    "vfile-message": "^4.0.0"
   },
   "description": "parse, inspect, transform, and serialize content through syntax trees",
   "devDependencies": {

@@ -2,6 +2,7 @@
 import './core.js'
 import './data.js'
 import './freeze.js'
+import './message-severity.js'
 import './parse.js'
 import './process.js'
 import './process-compilers.js'

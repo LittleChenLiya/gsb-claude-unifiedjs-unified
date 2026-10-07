@@ -22,6 +22,7 @@
   * [`processor.compiler`](#processorcompiler)
   * [`processor.data([key[, value]])`](#processordatakey-value)
   * [`processor.freeze()`](#processorfreeze)
+  * [`processor.messageSeverityMap`](#processormessageseveritymap)
   * [`processor.parse(file)`](#processorparsefile)
   * [`processor.parser`](#processorparser)
   * [`processor.process(file[, done])`](#processorprocessfile-done)
@@ -34,6 +35,7 @@
   * [`CompileResults`](#compileresults)
   * [`Compiler`](#compiler)
   * [`Data`](#data)
+  * [`MessageSeverityMap`](#messageseveritymap)
   * [`Parser`](#parser)
   * [`Pluggable`](#pluggable)
   * [`PluggableList`](#pluggablelist)
@@ -537,6 +539,42 @@ Create a new processor first, by calling it: use `processor()` instead of `proce
     …
 ```
 
+### `processor.messageSeverityMap`
+
+Optional strategy to map the severity of messages when processing completes
+([`MessageSeverityMap`][api-message-severity-map], optional).
+
+The strategy is called with each message on the file, in order, at the end of
+the process phase (in `process` and `processSync`), just before the file is
+yielded.
+Only the severity of messages (their `fatal` field) is changed: the messages
+themselves, their reasons, places, causes, order, and the file they are
+associated with stay the same.
+
+> 👉 **Note**: if the strategy throws for a message, that message is kept
+> as-is and mapping continues with the next message.
+> Messages are never lost.
+
+> 👉 **Note**: cloned processors (created by calling a processor) get their
+> own copy of the strategy: changing it on a clone does not affect the
+> original processor, or the other way around.
+
+###### Example
+
+This example turns every message into a fatal error when processing
+completes:
+
+```js
+import {unified} from 'unified'
+
+const processor = unified()
+// …configure parser, plugins, compiler…
+
+processor.messageSeverityMap = function () {
+  return true
+}
+```
+
 ### `processor.parse(file)`
 
 Parse text to a syntax tree.
@@ -1034,6 +1072,31 @@ interface Data {
 ```
 
 See [`Settings`][api-settings] for more info.
+
+### `MessageSeverityMap`
+
+Optional strategy to map the severity of messages when processing completes
+(TypeScript type).
+
+It is called with each message on the file, in order, at the end of the
+process phase (in `process` and `processSync`), just before the file is
+yielded.
+Only the severity of messages (their `fatal` field) is changed: the messages
+themselves, their reasons, places, causes, order, and the file they are
+associated with stay the same.
+
+###### Type
+
+```ts
+type MessageSeverityMap = (
+  message: VFileMessage,
+  file: VFile
+) => boolean | null | undefined
+```
+
+The return value is the new severity for `message`: `true` to mark it as an
+error, `false` to mark it as a warning, `null` to mark it as an info message,
+or `undefined` to keep the current severity.
 
 ### `Parser`
 
@@ -1813,6 +1876,8 @@ work on [`ware`][ware], as it was a huge initial inspiration.
 [api-data]: #data
 
 [api-freeze]: #processorfreeze
+
+[api-message-severity-map]: #messageseveritymap
 
 [api-parser]: #parser
 
